@@ -1,0 +1,44 @@
+@import "../../styles/variables.css";
+
+.register-container {
+  max-width: 380px;
+  margin: 100px auto;
+  padding: 24px;
+  background: var(--color-bg);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.register-title {
+  margin-bottom: 20px;
+  font-size: var(--font-size-title);
+  font-weight: bold;
+  color: var(--color-text-dark);
+  font-family: var(--font-family);
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.register-form input {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  font-size: var(--font-size-base);
+}
+
+.register-form input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 4px var(--color-shadow);
+}
+
+.register-login {
+  margin-top: 16px;
+  font-size: var(--font-size-small);
+  color: var(--color-text-light);
+}
