@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./Login.css";
 import Button from "../../components/Button/Button";
 import { useHttp } from "../../hooks/useHttp";
+import Navbar from "../../components/Navbar/Navbar";
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState<string>("");
@@ -34,7 +35,8 @@ const Login: React.FC = () => {
     }
   }, [data, navigate]);
 
-  return (
+  return (<>
+    <Navbar />
     <div className="login-container">
       <h2 className="login-title">Iniciar Sesión</h2>
 
@@ -74,7 +76,7 @@ const Login: React.FC = () => {
         />
       </p>
     </div>
-  );
+  </>);
 };
 
 export default Login;

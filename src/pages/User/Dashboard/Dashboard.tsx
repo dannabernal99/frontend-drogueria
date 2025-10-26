@@ -3,6 +3,7 @@ import "./Dashboard.css";
 import Button from "../../../components/Button/Button";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../hooks/useAuth";
+import Navbar from "../../../components/Navbar/Navbar";
 
 const Dashboard: React.FC = () => {
   const { logout } = useAuth();
@@ -14,7 +15,8 @@ const Dashboard: React.FC = () => {
     navigate("/");
   };
 
-  return (
+  return (<>
+  <Navbar />
     <div className="dashboard-container">
       <h1 className="dashboard-title">Hola Mundo</h1>
       <p className="dashboard-subtitle">
@@ -28,7 +30,7 @@ const Dashboard: React.FC = () => {
         onClick={handleLogout}
       />
     </div>
-  );
+  </>);
 };
 
 export default Dashboard;

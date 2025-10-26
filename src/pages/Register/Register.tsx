@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button/Button";
 import { useHttp } from "../../hooks/useHttp";
 import Modal from "../../components/Modal/Modal";
+import Navbar from "../../components/Navbar/Navbar";
 
 const Register: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -44,7 +45,8 @@ const Register: React.FC = () => {
     navigate("/");
   };
 
-  return (
+  return (<>
+  <Navbar />
     <div className="register-container">
       <h2 className="register-title">Registro de Usuario</h2>
 
@@ -114,7 +116,7 @@ const Register: React.FC = () => {
         onClose={handleCloseModal}
       />
     </div>
-  );
+  </>);
 };
 
 export default Register;
