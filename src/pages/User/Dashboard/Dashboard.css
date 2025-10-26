@@ -1,23 +1,29 @@
 @import "../../../styles/variables.css";
 
-.dashboard-container {
-  background-color: var(--color-bg);
-  min-height: 100vh;
+.dashboard-layout {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  font-family: var(--font-family);
+  min-height: 100vh;
+  background-color: #f8f8f8;
+  margin-top: 60px;
+}
+
+.dashboard-content {
+  flex: 1;
+  padding: 2rem;
+  margin-left: 240px;
+  background-color: #fff;
+  min-height: calc(100vh - 60px);
+  overflow-y: auto;
+  transition: all 0.3s ease;
 }
 
 .dashboard-title {
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-primary);
-  margin-bottom: 8px;
+  font-size: 2rem;
+  color: #6a11cb;
+  margin-bottom: 0.5rem;
 }
 
 .dashboard-subtitle {
-  font-size: var(--font-size-base);
-  color: var(--color-text-muted);
+  color: #555;
+  margin-bottom: 2rem;
 }

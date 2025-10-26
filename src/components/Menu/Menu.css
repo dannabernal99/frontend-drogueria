@@ -1,0 +1,59 @@
+.menu-lateral {
+  width: 240px;
+  background: linear-gradient(180deg, #6a11cb 0%, #2575fc 100%);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 60px);
+  position: sticky;
+  top: 60px;
+  padding: 1.5rem 1rem;
+  box-shadow: 3px 0 8px rgba(0, 0, 0, 0.15);
+  overflow-y: auto;
+  border-top-right-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+.menu-header {
+  text-align: center;
+}
+
+.menu-header h2 {
+  font-size: 1.3rem;
+  margin-bottom: 0.3rem;
+}
+
+.rol {
+  font-size: 0.8rem;
+  opacity: 0.8;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.menu-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 2rem;
+}
+
+.menu-item {
+  padding: 0.8rem 1rem;
+  margin-bottom: 0.6rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.menu-item:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateX(4px);
+}
+
+.menu-lateral::-webkit-scrollbar {
+  width: 6px;
+}
+.menu-lateral::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
