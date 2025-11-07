@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { API_BASE_URL } from "../config/apiConfi";
 
 interface RequestConfig {
   url: string;
-  method?: "GET" | "POST" | "PUT" | "DELETE";
+  method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
   headers?: Record<string, string>;
   body?: any;
 }
@@ -13,6 +13,7 @@ interface HttpResponse<T> {
   loading: boolean;
   error: string | null;
   sendRequest: (config: RequestConfig) => Promise<void>;
+  reset: () => void;
 }
 
 export function useHttp<T = any>(): HttpResponse<T> {
@@ -20,12 +21,11 @@ export function useHttp<T = any>(): HttpResponse<T> {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const sendRequest = async (config: RequestConfig) => {
+  const sendRequest = useCallback(async (config: RequestConfig) => {
     setLoading(true);
     setError(null);
 
     try {
-      // Si la URL no incluye "http", la concatenamos con la base
       const fullUrl = config.url.startsWith("http")
         ? config.url
         : `${API_BASE_URL}${config.url}`;
@@ -36,21 +36,55 @@ export function useHttp<T = any>(): HttpResponse<T> {
           "Content-Type": "application/json",
           ...(config.headers || {}),
         },
-        body: config.body ? JSON.stringify(config.body) : null,
+        body: config.body ? JSON.stringify(config.body) : undefined,
       });
 
       if (!response.ok) {
-        throw new Error(`Error HTTP: ${response.status}`);
+        if (response.status === 401) {
+          throw new Error("No autorizado. Por favor, inicia sesión nuevamente.");
+        } else if (response.status === 403) {
+          throw new Error("Acceso prohibido. No tienes permisos para esta acción.");
+        } else if (response.status === 404) {
+          throw new Error("Recurso no encontrado.");
+        } else if (response.status >= 500) {
+          throw new Error("Error del servidor. Intenta más tarde.");
+        } else {
+          throw new Error(`Error HTTP: ${response.status}`);
+        }
       }
 
-      const data = await response.json();
-      setData(data);
+      // Intentar parsear la respuesta como JSON
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        const jsonData = await response.json();
+        setData(jsonData);
+      } else {
+        // Si no es JSON, intentar como texto
+        const textData = await response.text();
+        setData(textData as any);
+      }
+
     } catch (err: any) {
-      setError(err.message || "Error inesperado");
+      const errorMessage = err.message || "Error inesperado al realizar la petición";
+      setError(errorMessage);
+      console.error("[HTTP] Error:", errorMessage, err);
+
+      // Si es error de autenticación, podríamos limpiar el token
+      if (err.message.includes("No autorizado")) {
+        localStorage.removeItem("token");
+        // Opcional: redirigir al login
+        // window.location.href = "/login";
+      }
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  return { data, loading, error, sendRequest };
+  const reset = useCallback(() => {
+    setData(null);
+    setError(null);
+    setLoading(false);
+  }, []);
+
+  return { data, loading, error, sendRequest, reset };
 }

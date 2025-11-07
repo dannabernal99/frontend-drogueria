@@ -1,0 +1,16 @@
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f8f8f8;
+  margin-top: 60px;
+}
+
+.admin-content {
+  flex: 1;
+  padding: 2rem;
+  margin-left: 240px;
+  background-color: #fff;
+  min-height: calc(100vh - 60px);
+  overflow-y: auto;
+  transition: all 0.3s ease;
+}

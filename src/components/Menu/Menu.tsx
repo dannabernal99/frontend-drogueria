@@ -16,8 +16,7 @@ const Menu: React.FC = () => {
     ADMIN: [
       { label: "Dashboard", path: "/dashboard" },
       { label: "Usuarios", path: "/usuarios" },
-      { label: "Productos", path: "/productos" },
-      { label: "Categorias", path: "/categorias" },
+      { label: "Productos", path: "/products" },
       { label: "Reportes", path: "/reportes" },
     ],
     USER: [
