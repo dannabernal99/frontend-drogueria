@@ -15,7 +15,6 @@
   align-items: center;
   padding: 1.5rem 2rem;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-bottom: none;
 }
 
 .table-title {
@@ -298,6 +297,107 @@
   font-weight: 600;
   color: #334155;
   font-size: 0.875rem;
+}
+
+.table-search-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem 0.5rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  background: #f9fafc;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.table-search-input {
+  flex: 1;
+  min-width: 250px;
+  max-width: 400px;
+  padding: 0.6rem 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: white;
+  color: #334155;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+
+.table-search-input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+.filters-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.filter-tag {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  box-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
+}
+
+.filter-tag button {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 0.8rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.filter-tag button:hover {
+  opacity: 0.7;
+}
+
+.column-filters-row input.column-filter-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #f8fafc;
+  color: #334155;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.column-filters-row input.column-filter-input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+}
+
+@media (max-width: 768px) {
+  .table-search-bar {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1rem;
+  }
+
+  .table-search-input {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .filters-container {
+    justify-content: center;
+  }
 }
 
 @media (max-width: 768px) {
