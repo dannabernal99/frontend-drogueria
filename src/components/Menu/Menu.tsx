@@ -45,8 +45,8 @@ const Menu: React.FC<MenuProps> = ({ onToggle }) => {
   const menuPorRol: Record<string, MenuItem[]> = {
     ADMIN: [
       { label: "Dashboard", path: "/dashboard", icon: <LayoutDashboard size={20} /> },
-      { label: "Usuarios", path: "/usuarios", icon: <Users size={20} /> },
-      { label: "Productos", path: "/products", icon: <Package size={20} /> },
+      { label: "Usuarios", path: "/admin/users", icon: <Users size={20} /> },
+      { label: "Productos", path: "/admin/products", icon: <Package size={20} /> },
       { label: "Reportes", path: "/reportes", icon: <FileBarChart size={20} /> },
     ],
     USER: [

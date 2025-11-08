@@ -5,6 +5,7 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import Home from "./pages/Home/Home";
 import ProductPage from "./pages/Admin/Product/ProductPage";
+import UserPage from "./pages/Admin/User/UserPage";
 
 function App() {
   return (
@@ -24,10 +25,19 @@ function App() {
         />
 
         <Route
-          path="/products"
+          path="/admin/products"
           element={
             <ProtectedRoute>
               <ProductPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/users"
+          element={
+            <ProtectedRoute>
+              <UserPage />
             </ProtectedRoute>
           }
         />

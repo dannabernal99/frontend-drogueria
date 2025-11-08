@@ -80,10 +80,16 @@ const ProductPage: React.FC = () => {
   const handleConfirmDelete = async () => {
     if (!deleteModal.productToDelete) return;
 
+    const token = localStorage.getItem("token");
+    if (!token) return console.error("No hay token de autenticación disponible");
+    
     try {
       await sendRequest({
         url: `/v1/productos/${deleteModal.productToDelete.id}`,
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
       loadProductos();
       setDeleteModal({ isOpen: false, productToDelete: null });
@@ -119,7 +125,7 @@ const ProductPage: React.FC = () => {
       placeholder: "Ej: Dolex",
       required: true,
       validation: (value) => {
-        if (!value || value.trim().length < 3) {
+        if (typeof value !== "string" || value.trim().length < 3) {
           return "El nombre debe tener al menos 3 caracteres";
         }
         return undefined;
@@ -135,12 +141,12 @@ const ProductPage: React.FC = () => {
       min: 0,
       step: 100,
       validation: (value) => {
-        if (value <= 0) {
+        if (typeof value !== "number" || value <= 0) {
           return "El precio debe ser mayor a 0";
         }
         return undefined;
       },
-      defaultValue: editingProduct?.precio || "",
+      defaultValue: editingProduct?.precio ?? 0,
     },
     {
       name: "cantidad",
@@ -151,12 +157,12 @@ const ProductPage: React.FC = () => {
       min: 0,
       step: 1,
       validation: (value) => {
-        if (value < 0) {
+        if (typeof value !== "number" || value < 0) {
           return "La cantidad no puede ser negativa";
         }
         return undefined;
       },
-      defaultValue: editingProduct?.cantidad || "",
+      defaultValue: editingProduct?.cantidad ?? 0,
     },
   ];
 

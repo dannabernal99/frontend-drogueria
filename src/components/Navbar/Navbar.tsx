@@ -9,7 +9,7 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, usuario } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -20,7 +20,8 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
   return (
     <nav className="navbar">
       <div className="navbar-left">
-        <Menu onToggle={onMenuToggle} />
+        {/* Solo mostrar Menu si hay usuario logueado */}
+        {isAuthenticated && usuario && <Menu onToggle={onMenuToggle} />}
         <div className="navbar-logo">💈 BeautyApp</div>
       </div>
 
