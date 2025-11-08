@@ -17,9 +17,3 @@
 .page-header{
   margin-bottom: 1rem;
 }
-
-.action-buttons {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}

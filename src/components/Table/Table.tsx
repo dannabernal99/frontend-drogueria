@@ -1,4 +1,6 @@
 import React, { useMemo, useState } from "react";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 import "./Table.css";
 
 export type Column<T> = {
@@ -7,6 +9,8 @@ export type Column<T> = {
   render?: (row: T) => React.ReactNode;
   sortable?: boolean;
   className?: string;
+  exportLabel?: string; // Label personalizado para Excel
+  exportFormat?: (value: unknown) => string | number; // Formato para Excel
 };
 
 export type Action<T> = {
@@ -14,6 +18,15 @@ export type Action<T> = {
   onClick: (row: T) => void;
   className?: string;
   confirm?: { message?: string };
+};
+
+export type TableHeader = {
+  title: string;
+  showCreateButton?: boolean;
+  onCreateClick?: () => void;
+  createButtonText?: string;
+  showExportButton?: boolean;
+  exportFileName?: string;
 };
 
 type Props<T> = {
@@ -24,7 +37,12 @@ type Props<T> = {
   noDataMessage?: string;
   compact?: boolean;
   onRowClick?: (row: T) => void;
+  
+  header?: TableHeader;
+  
+  enablePagination?: boolean;
   rowsPerPageOptions?: number[];
+  defaultRowsPerPage?: number;
 };
 
 export default function Table<T extends Record<string, unknown>>({
@@ -35,12 +53,15 @@ export default function Table<T extends Record<string, unknown>>({
   noDataMessage = "No hay datos",
   compact = false,
   onRowClick,
-  rowsPerPageOptions = [5, 10, 20],
+  header,
+  enablePagination = false,
+  rowsPerPageOptions = [5, 10, 20, 50],
+  defaultRowsPerPage = 10,
 }: Props<T>) {
   const [sortBy, setSortBy] = useState<string | null>(null);
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
+  const [rowsPerPage, setRowsPerPage] = useState(defaultRowsPerPage);
 
   const sortedData = useMemo(() => {
     if (!sortBy) return data;
@@ -63,12 +84,10 @@ export default function Table<T extends Record<string, unknown>>({
     return copy;
   }, [data, sortBy, sortDir]);
 
-  // --- Paginación ---
   const totalPages = Math.ceil(sortedData.length / rowsPerPage);
-  const paginatedData = sortedData.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
-  );
+  const displayData = enablePagination
+    ? sortedData.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage)
+    : sortedData;
 
   function toggleSort(column: Column<T>) {
     const key = String(column.key);
@@ -91,8 +110,79 @@ export default function Table<T extends Record<string, unknown>>({
     setCurrentPage(1);
   }
 
+  function handleExport() {
+    if (!data || data.length === 0) {
+      alert("No hay datos para exportar");
+      return;
+    }
+
+    const exportData = data.map((row) => {
+      const exportRow: Record<string, string | number> = {};
+      
+      columns.forEach((col) => {
+        const label = col.exportLabel || col.label;
+        const value = row[col.key as keyof T];
+        
+        exportRow[label] = col.exportFormat
+          ? col.exportFormat(value)
+          : String(value ?? "");
+      });
+      
+      return exportRow;
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Datos");
+
+    const maxWidth = 50;
+    const colWidths = columns.map((col) => {
+      const label = col.exportLabel || col.label;
+      const maxLength = Math.max(
+        label.length,
+        ...exportData.map((row) => String(row[label] ?? "").length)
+      );
+      return { wch: Math.min(maxLength + 2, maxWidth) };
+    });
+    worksheet["!cols"] = colWidths;
+
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([excelBuffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    
+    const timestamp = new Date().toISOString().split("T")[0];
+    const fileName = header?.exportFileName || "export";
+    saveAs(blob, `${fileName}_${timestamp}.xlsx`);
+  }
+
   return (
     <div className={`az-table-wrapper ${compact ? "compact" : ""}`}>
+      {header && (
+        <div className="table-header">
+          <h2 className="table-title">{header.title}</h2>
+          <div className="table-header-actions">
+            {header.showExportButton && (
+              <button
+                onClick={handleExport}
+                className="table-btn table-btn-secondary"
+                disabled={data.length === 0}
+              >
+                Exportar Excel
+              </button>
+            )}
+            {header.showCreateButton && header.onCreateClick && (
+              <button
+                onClick={header.onCreateClick}
+                className="table-btn table-btn-primary"
+              >
+                {header.createButtonText || "+ Crear"}
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
       <div className="az-table-scroll">
         <table className="az-table">
           <thead>
@@ -100,9 +190,7 @@ export default function Table<T extends Record<string, unknown>>({
               {columns.map((col) => (
                 <th key={String(col.key)} className={col.className || ""}>
                   <div
-                    className={`az-th-content ${
-                      col.sortable ? "sortable" : ""
-                    }`}
+                    className={`az-th-content ${col.sortable ? "sortable" : ""}`}
                     onClick={() => toggleSort(col)}
                   >
                     <span>{col.label}</span>
@@ -120,7 +208,7 @@ export default function Table<T extends Record<string, unknown>>({
           </thead>
 
           <tbody>
-            {paginatedData.length === 0 ? (
+            {displayData.length === 0 ? (
               <tr>
                 <td
                   colSpan={columns.length + (actions.length > 0 ? 1 : 0)}
@@ -130,10 +218,11 @@ export default function Table<T extends Record<string, unknown>>({
                 </td>
               </tr>
             ) : (
-              paginatedData.map((row, idx) => (
+              displayData.map((row, idx) => (
                 <tr
                   key={String(row[rowKey as keyof T] ?? idx)}
                   onClick={() => onRowClick && onRowClick(row)}
+                  className={onRowClick ? "clickable-row" : ""}
                 >
                   {columns.map((col) => (
                     <td key={String(col.key)} className={col.className || ""}>
@@ -172,7 +261,7 @@ export default function Table<T extends Record<string, unknown>>({
         </table>
       </div>
 
-      {sortedData.length > 0 && (
+      {enablePagination && sortedData.length > 0 && (
         <div className="table-pagination">
           <div className="rows-per-page">
             <label>Filas por página:</label>
@@ -189,21 +278,43 @@ export default function Table<T extends Record<string, unknown>>({
             </select>
           </div>
 
+          <div className="pagination-info">
+            Mostrando {(currentPage - 1) * rowsPerPage + 1} -{" "}
+            {Math.min(currentPage * rowsPerPage, sortedData.length)} de{" "}
+            {sortedData.length} registros
+          </div>
+
           <div className="pagination-controls">
+            <button
+              onClick={() => goToPage(1)}
+              disabled={currentPage === 1}
+              className="pagination-btn"
+            >
+              ⏮ Primera
+            </button>
             <button
               onClick={() => goToPage(currentPage - 1)}
               disabled={currentPage === 1}
+              className="pagination-btn"
             >
               ◀ Anterior
             </button>
-            <span>
+            <span className="page-indicator">
               Página {currentPage} de {totalPages}
             </span>
             <button
               onClick={() => goToPage(currentPage + 1)}
               disabled={currentPage === totalPages}
+              className="pagination-btn"
             >
               Siguiente ▶
+            </button>
+            <button
+              onClick={() => goToPage(totalPages)}
+              disabled={currentPage === totalPages}
+              className="pagination-btn"
+            >
+              Última ⏭
             </button>
           </div>
         </div>
