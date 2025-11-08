@@ -16,6 +16,7 @@ interface Usuario {
 export const useAuth = () => {
   const [token, setToken] = useState<string | null>(null);
   const [usuario, setUsuario] = useState<Usuario | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -23,6 +24,8 @@ export const useAuth = () => {
 
     if (storedToken) setToken(storedToken);
     if (storedUser) setUsuario(JSON.parse(storedUser));
+
+    setLoading(false);
   }, []);
 
   const login = (token: string, usuario: Usuario) => {
@@ -39,5 +42,5 @@ export const useAuth = () => {
     setUsuario(null);
   };
 
-  return { token, usuario, login, logout, isAuthenticated: !!token };
+  return { token, usuario, login, logout, isAuthenticated: !!token, loading };
 };

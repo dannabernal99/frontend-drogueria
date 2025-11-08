@@ -42,6 +42,9 @@ const Menu: React.FC<MenuProps> = ({ onToggle }) => {
     });
   };
 
+  // Si no hay usuario logueado, no mostrar el menú
+  if (!usuario) return null;
+
   const menuPorRol: Record<string, MenuItem[]> = {
     ADMIN: [
       { label: "Dashboard", path: "/dashboard", icon: <LayoutDashboard size={20} /> },
@@ -55,7 +58,7 @@ const Menu: React.FC<MenuProps> = ({ onToggle }) => {
     ],
   };
 
-  const rol = usuario?.roleNombre?.toUpperCase() || "CLIENTE";
+  const rol = usuario.roleNombre?.toUpperCase() || "CLIENTE";
   const items = menuPorRol[rol] || [];
 
   return (

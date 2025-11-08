@@ -82,7 +82,7 @@ const ProductPage: React.FC = () => {
 
     const token = localStorage.getItem("token");
     if (!token) return console.error("No hay token de autenticación disponible");
-    
+
     try {
       await sendRequest({
         url: `/v1/productos/${deleteModal.productToDelete.id}`,
@@ -181,41 +181,13 @@ const ProductPage: React.FC = () => {
     setEditingProduct(null);
     setIsModalOpen(true);
   };
-
-  if (loading) {
-    return (
-      <>
-        <Navbar />
-        <div className="admin-layout">
-          <main className="admin-content">
-            <div className="loading-container">
-              <p>Cargando productos...</p>
-            </div>
-          </main>
-        </div>
-      </>
-    );
-  }
-
-  if (error) {
-    return (
-      <>
-        <Navbar />
-        <div className="admin-layout">
-          <main className="admin-content">
-            <div className="error-container">
-              <p>Error: {error}</p>
-            </div>
-          </main>
-        </div>
-      </>
-    );
-  }
+  
+  if (loading) return <><Navbar /><div className="admin-layout"><main className="admin-content"><p>Cargando productos...</p></main></div></>;
+  if (error) return <><Navbar /><div className="admin-layout"><main className="admin-content"><p>Error: {error}</p></main></div></>;
 
   return (
     <div className={`admin-layout ${menuAbierto ? "menu-abierto" : "menu-cerrado"}`}>
       <Navbar onMenuToggle={setMenuAbierto} />
-      <div className="admin-layout">
         <main className="admin-content">
           <Table<Product>
             columns={columns}
@@ -238,7 +210,6 @@ const ProductPage: React.FC = () => {
             enableColumnFilters={true}
           />
         </main>
-      </div>
 
       <FormModal
         isOpen={isModalOpen}

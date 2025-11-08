@@ -11,37 +11,37 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+  <Route path="/" element={<Home />} />
+  <Route path="/login" element={<Login />} />
+  <Route path="/register" element={<Register />} />
 
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
+  <Route
+    path="/dashboard"
+    element={
+      <ProtectedRoute allowedRoles={["ADMIN", "USER"]}>
+        <Dashboard />
+      </ProtectedRoute>
+    }
+  />
 
-        <Route
-          path="/admin/products"
-          element={
-            <ProtectedRoute>
-              <ProductPage />
-            </ProtectedRoute>
-          }
-        />
+  <Route
+    path="/admin/products"
+    element={
+      <ProtectedRoute allowedRoles={["ADMIN"]}>
+        <ProductPage />
+      </ProtectedRoute>
+    }
+  />
 
-        <Route
-          path="/admin/users"
-          element={
-            <ProtectedRoute>
-              <UserPage />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
+  <Route
+    path="/admin/users"
+    element={
+      <ProtectedRoute allowedRoles={["ADMIN"]}>
+        <UserPage />
+      </ProtectedRoute>
+    }
+  />
+</Routes>
     </Router>
   );
 }

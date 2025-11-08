@@ -1,6 +1,6 @@
 import React from "react";
 import "./Navbar.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import Menu from "../Menu/Menu";
 
@@ -11,23 +11,24 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
   const { isAuthenticated, logout, usuario } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
     logout();
     navigate("/");
   };
 
+  const rutasSinMenu = ["/"];
+  const mostrarMenu = isAuthenticated && usuario && !rutasSinMenu.includes(location.pathname);
+
   return (
     <nav className="navbar">
       <div className="navbar-left">
-        {/* Solo mostrar Menu si hay usuario logueado */}
-        {isAuthenticated && usuario && <Menu onToggle={onMenuToggle} />}
+        {mostrarMenu && <Menu onToggle={onMenuToggle} />}
         <div className="navbar-logo">💈 BeautyApp</div>
       </div>
 
       <div className="navbar-links">
-        <Link to="/" className="navbar-link">Inicio</Link>
-
         {!isAuthenticated ? (
           <>
             <Link to="/login" className="navbar-link">Ingresar</Link>
@@ -35,6 +36,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
           </>
         ) : (
           <>
+            <Link to="/" className="navbar-link">Inicio</Link>
             <Link to="/dashboard" className="navbar-link">Dashboard</Link>
             <button className="navbar-btn" onClick={handleLogout}>
               Cerrar sesión
