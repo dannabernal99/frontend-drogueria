@@ -1,8 +1,11 @@
 import React, { useEffect, useCallback, useState } from "react";
 import "./Product.css";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver"; 
 import Navbar from "../../../components/Navbar/Navbar";
 import Menu from "../../../components/Menu/Menu";
 import Table from "../../../components/Table/Table";
+import Modal from "../../../components/Modal/Modal";
 import FormModal from "../../../components/FormModal/FormModal";
 import Button from "../../../components/Button/Button";
 import { useHttp } from "../../../hooks/useHttp";
@@ -17,6 +20,12 @@ const Product: React.FC = () => {
   const [deleteModal, setDeleteModal] = useState({
     isOpen: false,
     productToDelete: null as Product | null,
+  });
+
+  const [modalInfo, setModalInfo] = useState({
+    isOpen: false,
+    title: "",
+    message: "",
   });
 
   const loadProductos = useCallback(() => {
@@ -46,6 +55,34 @@ const Product: React.FC = () => {
     { key: "precio", label: "Precio" },
     { key: "cantidad", label: "Cantidad" },
   ];
+
+  const handleExportExcel = () => {
+    if (!productos || productos.length === 0) {
+      setModalInfo({
+        isOpen: true,
+        title: "Sin datos",
+        message: "No hay datos disponibles para exportar.",
+      });
+      return;
+    }
+
+    const dataToExport = productos.map((p) => ({
+      ID: p.id,
+      Nombre: p.nombre,
+      Precio: p.precio,
+      Cantidad: p.cantidad,
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Productos");
+
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([excelBuffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    saveAs(blob, "productos.xlsx");
+  };
 
   const handleDeleteClick = (product: Product) => {
     setDeleteModal({
@@ -166,11 +203,18 @@ const Product: React.FC = () => {
           <div className="content-wrapper">
             <div className="page-header">
               <h2>Gestión de Productos</h2>
-              <Button 
-                text="Crear registro"
-                onClick={handleAddNew}
-                variant="primary"
-              />
+              <div className="action-buttons">
+                <Button 
+                  text="Crear registro"
+                  onClick={handleAddNew}
+                  variant="primary"
+                />
+                <Button 
+                  text="Exportar Excel"
+                  onClick={handleExportExcel}
+                  variant="secondary"
+                />
+              </div>
             </div>
             
             {loading && (
@@ -233,6 +277,13 @@ const Product: React.FC = () => {
         confirmText="Eliminar"
         cancelText="Cancelar"
         confirmButtonClass="modal-button-danger"
+      />
+
+      <Modal
+        isOpen={modalInfo.isOpen}
+        title={modalInfo.title}
+        message={modalInfo.message}
+        onClose={() => setModalInfo({ isOpen: false, title: "", message: "" })}
       />
     </>
   );

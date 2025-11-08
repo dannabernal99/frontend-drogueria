@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import './Table.css';
+import "./Table.css";
 
 export type Column<T> = {
   key: keyof T | string;
@@ -24,6 +24,7 @@ type Props<T> = {
   noDataMessage?: string;
   compact?: boolean;
   onRowClick?: (row: T) => void;
+  rowsPerPageOptions?: number[];
 };
 
 export default function Table<T extends Record<string, unknown>>({
@@ -31,12 +32,15 @@ export default function Table<T extends Record<string, unknown>>({
   data,
   actions = [],
   rowKey,
-  noDataMessage = 'No hay datos',
+  noDataMessage = "No hay datos",
   compact = false,
   onRowClick,
+  rowsPerPageOptions = [5, 10, 20],
 }: Props<T>) {
   const [sortBy, setSortBy] = useState<string | null>(null);
-  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
 
   const sortedData = useMemo(() => {
     if (!sortBy) return data;
@@ -47,41 +51,65 @@ export default function Table<T extends Record<string, unknown>>({
       if (va == null && vb == null) return 0;
       if (va == null) return -1;
       if (vb == null) return 1;
-      if (typeof va === 'number' && typeof vb === 'number') {
-        return sortDir === 'asc' ? va - vb : vb - va;
+      if (typeof va === "number" && typeof vb === "number") {
+        return sortDir === "asc" ? va - vb : vb - va;
       }
       const sa = String(va).toLowerCase();
       const sb = String(vb).toLowerCase();
-      if (sa < sb) return sortDir === 'asc' ? -1 : 1;
-      if (sa > sb) return sortDir === 'asc' ? 1 : -1;
+      if (sa < sb) return sortDir === "asc" ? -1 : 1;
+      if (sa > sb) return sortDir === "asc" ? 1 : -1;
       return 0;
     });
     return copy;
   }, [data, sortBy, sortDir]);
+
+  // --- Paginación ---
+  const totalPages = Math.ceil(sortedData.length / rowsPerPage);
+  const paginatedData = sortedData.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage
+  );
 
   function toggleSort(column: Column<T>) {
     const key = String(column.key);
     if (!column.sortable) return;
     if (sortBy !== key) {
       setSortBy(key);
-      setSortDir('asc');
+      setSortDir("asc");
     } else {
-      setSortDir(prev => (prev === 'asc' ? 'desc' : 'asc'));
+      setSortDir((prev) => (prev === "asc" ? "desc" : "asc"));
     }
   }
 
+  function goToPage(page: number) {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+  }
+
+  function handleRowsPerPageChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    setRowsPerPage(Number(e.target.value));
+    setCurrentPage(1);
+  }
+
   return (
-    <div className={`az-table-wrapper ${compact ? 'compact' : ''}`}>
+    <div className={`az-table-wrapper ${compact ? "compact" : ""}`}>
       <div className="az-table-scroll">
         <table className="az-table">
           <thead>
             <tr>
-              {columns.map(col => (
-                <th key={String(col.key)} className={col.className || ''}>
-                  <div className={`az-th-content ${col.sortable ? 'sortable' : ''}`} onClick={() => toggleSort(col)}>
+              {columns.map((col) => (
+                <th key={String(col.key)} className={col.className || ""}>
+                  <div
+                    className={`az-th-content ${
+                      col.sortable ? "sortable" : ""
+                    }`}
+                    onClick={() => toggleSort(col)}
+                  >
                     <span>{col.label}</span>
                     {col.sortable && sortBy === String(col.key) && (
-                      <span className="az-sort-indicator">{sortDir === 'asc' ? '▲' : '▼'}</span>
+                      <span className="az-sort-indicator">
+                        {sortDir === "asc" ? "▲" : "▼"}
+                      </span>
                     )}
                   </div>
                 </th>
@@ -92,18 +120,26 @@ export default function Table<T extends Record<string, unknown>>({
           </thead>
 
           <tbody>
-            {sortedData.length === 0 ? (
+            {paginatedData.length === 0 ? (
               <tr>
-                <td colSpan={columns.length + (actions.length > 0 ? 1 : 0)} className="no-data">
+                <td
+                  colSpan={columns.length + (actions.length > 0 ? 1 : 0)}
+                  className="no-data"
+                >
                   {noDataMessage}
                 </td>
               </tr>
             ) : (
-              sortedData.map((row, idx) => (
-                <tr key={String(row[rowKey as keyof T] ?? idx)} onClick={() => onRowClick && onRowClick(row)}>
-                  {columns.map(col => (
-                    <td key={String(col.key)} className={col.className || ''}>
-                      {col.render ? col.render(row) : String(row[col.key as keyof T] ?? '')}
+              paginatedData.map((row, idx) => (
+                <tr
+                  key={String(row[rowKey as keyof T] ?? idx)}
+                  onClick={() => onRowClick && onRowClick(row)}
+                >
+                  {columns.map((col) => (
+                    <td key={String(col.key)} className={col.className || ""}>
+                      {col.render
+                        ? col.render(row)
+                        : String(row[col.key as keyof T] ?? "")}
                     </td>
                   ))}
 
@@ -113,11 +149,12 @@ export default function Table<T extends Record<string, unknown>>({
                         {actions.map((act, i) => (
                           <button
                             key={i}
-                            className={`action-btn ${act.className || ''}`}
+                            className={`action-btn ${act.className || ""}`}
                             onClick={(e) => {
                               e.stopPropagation();
                               if (act.confirm) {
-                                if (!confirm(act.confirm.message ?? '¿Estás segura?')) return;
+                                if (!confirm(act.confirm.message ?? "¿Seguro?"))
+                                  return;
                               }
                               act.onClick(row);
                             }}
@@ -134,6 +171,43 @@ export default function Table<T extends Record<string, unknown>>({
           </tbody>
         </table>
       </div>
+
+      {sortedData.length > 0 && (
+        <div className="table-pagination">
+          <div className="rows-per-page">
+            <label>Filas por página:</label>
+            <select
+              value={rowsPerPage}
+              onChange={handleRowsPerPageChange}
+              className="rows-select"
+            >
+              {rowsPerPageOptions.map((opt) => (
+                <option key={opt} value={opt}>
+                  {opt}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="pagination-controls">
+            <button
+              onClick={() => goToPage(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              ◀ Anterior
+            </button>
+            <span>
+              Página {currentPage} de {totalPages}
+            </span>
+            <button
+              onClick={() => goToPage(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Siguiente ▶
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

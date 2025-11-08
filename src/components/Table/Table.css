@@ -376,3 +376,39 @@
   background: #fff3cd;
   color: #f7b731;
 }
+
+.table-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.table-pagination button {
+  background-color: var(--primary-gray);
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.table-pagination button:hover:not(:disabled) {
+  background-color: var(--primary-yellow);
+  color: #000;
+}
+
+.table-pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.rows-select {
+  margin-left: 0.5rem;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--primary-light-gray);
+  background-color: var(--primary-gray);
+  color: var(--text-color);
+}
