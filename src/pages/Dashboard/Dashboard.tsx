@@ -1,23 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Dashboard.css";
 import Navbar from "../../components/Navbar/Navbar";
-import Menu from "../../components/Menu/Menu";
 
 const Dashboard: React.FC = () => {
-  return (
-    <>
-      <Navbar />
-      <div className="dashboard-layout">
-        <Menu />
+  const [menuAbierto, setMenuAbierto] = useState(true);
 
-        <main className="dashboard-content">
-          <h1 className="dashboard-title">Hola Mundo</h1>
-          <p className="dashboard-subtitle">
-            Bienvenido al panel principal de la aplicación
-          </p>
-        </main>
-      </div>
-    </>
+  return (
+    <div className={`dashboard-layout ${menuAbierto ? "menu-abierto" : "menu-cerrado"}`}>
+      <Navbar onMenuToggle={setMenuAbierto} />
+      <main className="dashboard-content">
+        <h1 className="dashboard-title">Hola Mundo</h1>
+        <p className="dashboard-subtitle">
+          Bienvenido al panel principal de la aplicación
+        </p>
+      </main>
+    </div>
   );
 };
 

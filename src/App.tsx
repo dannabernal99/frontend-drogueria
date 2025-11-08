@@ -4,7 +4,7 @@ import Register from "./pages/Register/Register";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import Home from "./pages/Home/Home";
-import Product from "./pages/Admin/Product/Product";
+import ProductPage from "./pages/Admin/Product/ProductPage";
 
 function App() {
   return (
@@ -27,7 +27,7 @@ function App() {
           path="/products"
           element={
             <ProtectedRoute>
-              <Product />
+              <ProductPage />
             </ProtectedRoute>
           }
         />

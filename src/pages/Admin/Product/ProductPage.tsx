@@ -1,7 +1,6 @@
 import React, { useEffect, useCallback, useState } from "react";
-import "./Product.css";
+import "./ProductPage.css";
 import Navbar from "../../../components/Navbar/Navbar";
-import Menu from "../../../components/Menu/Menu";
 import Table from "../../../components/Table/Table";
 import FormModal from "../../../components/FormModal/FormModal";
 import { useHttp } from "../../../hooks/useHttp";
@@ -9,7 +8,7 @@ import type { FormField } from "../../../components/FormModal/FormModal";
 import type { Product } from "../../../types/Product";
 import ConfirmModal from "../../../components/ConfirmModal/ConfirmModal";
 
-const Product: React.FC = () => {
+const ProductPage: React.FC = () => {
   const { data: productos, loading, error, sendRequest } = useHttp<Product[]>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -17,6 +16,8 @@ const Product: React.FC = () => {
     isOpen: false,
     productToDelete: null as Product | null,
   });
+
+  const [menuAbierto, setMenuAbierto] = useState(true);
 
   const loadProductos = useCallback(() => {
     const token = localStorage.getItem("token");
@@ -180,7 +181,6 @@ const Product: React.FC = () => {
       <>
         <Navbar />
         <div className="admin-layout">
-          <Menu />
           <main className="admin-content">
             <div className="loading-container">
               <p>Cargando productos...</p>
@@ -196,7 +196,6 @@ const Product: React.FC = () => {
       <>
         <Navbar />
         <div className="admin-layout">
-          <Menu />
           <main className="admin-content">
             <div className="error-container">
               <p>Error: {error}</p>
@@ -208,10 +207,9 @@ const Product: React.FC = () => {
   }
 
   return (
-    <>
-      <Navbar />
+    <div className={`admin-layout ${menuAbierto ? "menu-abierto" : "menu-cerrado"}`}>
+      <Navbar onMenuToggle={setMenuAbierto} />
       <div className="admin-layout">
-        <Menu />
         <main className="admin-content">
           <Table<Product>
             columns={columns}
@@ -257,8 +255,8 @@ const Product: React.FC = () => {
         cancelText="Cancelar"
         confirmButtonClass="modal-button-danger"
       />
-    </>
+    </div>
   );
 };
 
-export default Product;
+export default ProductPage;
