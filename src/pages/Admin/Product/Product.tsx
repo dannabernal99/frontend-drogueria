@@ -7,11 +7,17 @@ import FormModal from "../../../components/FormModal/FormModal";
 import Button from "../../../components/Button/Button";
 import { useHttp } from "../../../hooks/useHttp";
 import type { FormField } from "../../../components/FormModal/FormModal";
+import type { Product } from "../../../types/Product";
+import ConfirmModal from "../../../components/ConfirmModal/ConfirmModal";
 
 const Product: React.FC = () => {
-  const { data: productos, loading, error, sendRequest } = useHttp<any[]>();
+  const { data: productos, loading, error, sendRequest } = useHttp<Product[]>();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<any | null>(null);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [deleteModal, setDeleteModal] = useState({
+    isOpen: false,
+    productToDelete: null as Product | null,
+  });
 
   const loadProductos = useCallback(() => {
     const token = localStorage.getItem("token");
@@ -41,33 +47,48 @@ const Product: React.FC = () => {
     { key: "cantidad", label: "Cantidad" },
   ];
 
+  const handleDeleteClick = (product: Product) => {
+    setDeleteModal({
+      isOpen: true,
+      productToDelete: product,
+    });
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteModal.productToDelete) return;
+
+    const token = localStorage.getItem("token");
+    try {
+      await sendRequest({
+        url: `/v1/productos/${deleteModal.productToDelete.id}`,
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      loadProductos();
+      setDeleteModal({ isOpen: false, productToDelete: null });
+    } catch (error) {
+      console.error("Error al eliminar producto:", error);
+      setDeleteModal({ isOpen: false, productToDelete: null });
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteModal({ isOpen: false, productToDelete: null });
+  };
+
   const actions = [
     {
       label: "Editar",
-      onClick: (item: any) => {
+      onClick: (item: Product) => {
         setEditingProduct(item);
         setIsModalOpen(true);
       },
     },
     {
-        label: "Eliminar",
-        onClick: async (item: any) => {
-            if (window.confirm(`¿Estás seguro de eliminar "${item.nombre}"?`)) {  // Faltaban paréntesis aquí
-            const token = localStorage.getItem("token");
-            try {
-                await sendRequest({
-                url: `/v1/productos/${item.id}`,
-                method: "DELETE",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-                });
-                loadProductos();
-            } catch (error) {
-                console.error("Error al eliminar producto:", error);
-            }
-            }
-        },
+      label: "Eliminar",
+      onClick: (item: Product) => handleDeleteClick(item),
     }
   ];
 
@@ -120,7 +141,7 @@ const Product: React.FC = () => {
     },
   ];
 
-  const handleSubmit = async (formData: Record<string, any>) => {
+  const handleSubmit = async () => {
     setIsModalOpen(false);
     setEditingProduct(null);
     loadProductos();
@@ -146,7 +167,7 @@ const Product: React.FC = () => {
             <div className="page-header">
               <h2>Gestión de Productos</h2>
               <Button 
-                text="+ Nuevo Producto"
+                text="Crear registro"
                 onClick={handleAddNew}
                 variant="primary"
               />
@@ -171,7 +192,7 @@ const Product: React.FC = () => {
             
             {!loading && !error && productos && productos.length > 0 && (
               <div className="table-container">
-                <Table<any>
+                <Table<Product>
                   columns={columns}
                   data={productos}
                   actions={actions}
@@ -189,7 +210,6 @@ const Product: React.FC = () => {
         </main>
       </div>
 
-      {/* Modal para crear/editar productos */}
       <FormModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
@@ -202,6 +222,17 @@ const Product: React.FC = () => {
         }
         httpMethod={editingProduct ? "PUT" : "POST"}
         submitText={editingProduct ? "Actualizar" : "Crear Producto"}
+      />
+
+      <ConfirmModal
+        isOpen={deleteModal.isOpen}
+        title="Confirmar eliminación"
+        message={`¿Estás seguro de eliminar "${deleteModal.productToDelete?.nombre}"?`}
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+        confirmText="Eliminar"
+        cancelText="Cancelar"
+        confirmButtonClass="modal-button-danger"
       />
     </>
   );

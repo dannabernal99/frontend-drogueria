@@ -26,7 +26,7 @@ type Props<T> = {
   onRowClick?: (row: T) => void;
 };
 
-export default function Table<T extends Record<string, any>>({
+export default function Table<T extends Record<string, unknown>>({
   columns,
   data,
   actions = [],

@@ -13,7 +13,7 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
   const { data, loading, error, sendRequest } = useHttp<{
     token: string;
-    usuario: Record<string, any>;
+    usuario: Record<string, unknown>;
   }>();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

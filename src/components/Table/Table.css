@@ -1,8 +1,3 @@
-/* ===================================
-   TABLA MODERNA Y PROFESIONAL
-   =================================== */
-
-/* Contenedor principal */
 .az-table-wrapper {
   width: 100%;
   background: #ffffff;
@@ -16,7 +11,6 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
-/* Scroll horizontal suave */
 .az-table-scroll {
   overflow-x: auto;
   overflow-y: visible;
@@ -40,7 +34,6 @@
   background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
 }
 
-/* Tabla principal */
 .az-table {
   width: 100%;
   border-collapse: separate;
@@ -48,10 +41,6 @@
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 }
-
-/* ===================================
-   HEADER DE LA TABLA
-   =================================== */
 
 .az-table thead {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -87,7 +76,6 @@
   border-top-right-radius: 12px;
 }
 
-/* Contenido del header */
 .az-th-content {
   display: flex;
   align-items: center;
@@ -109,16 +97,11 @@
   transform: scale(0.98);
 }
 
-/* Indicador de orden */
 .az-sort-indicator {
   font-size: 10px;
   opacity: 0.9;
   transition: transform 0.2s ease;
 }
-
-/* ===================================
-   BODY DE LA TABLA
-   =================================== */
 
 .az-table tbody {
   background: #ffffff;
@@ -163,7 +146,6 @@
   padding-right: 24px;
 }
 
-/* Mensaje de "No hay datos" */
 .az-table td.no-data {
   text-align: center;
   padding: 60px 20px;
@@ -172,10 +154,6 @@
   font-style: italic;
   background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
 }
-
-/* ===================================
-   COLUMNA DE ACCIONES
-   =================================== */
 
 .az-table th.actions-col {
   text-align: center;
@@ -195,7 +173,6 @@
   flex-wrap: wrap;
 }
 
-/* Botones de acción */
 .action-btn {
   padding: 8px 16px;
   font-size: 13px;
@@ -233,7 +210,6 @@
   transform: scale(0.95);
 }
 
-/* Botón por defecto (Editar, Ver, etc.) */
 .action-btn:not(.danger):not(.success):not(.warning) {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
@@ -246,7 +222,6 @@
   transform: translateY(-2px);
 }
 
-/* Botón de peligro (Eliminar, etc.) */
 .action-btn.danger {
   background: linear-gradient(135deg, #fc5c65 0%, #eb3b5a 100%);
   color: white;
@@ -259,7 +234,6 @@
   transform: translateY(-2px);
 }
 
-/* Botón de éxito */
 .action-btn.success {
   background: linear-gradient(135deg, #26de81 0%, #20bf6b 100%);
   color: white;
@@ -272,7 +246,6 @@
   transform: translateY(-2px);
 }
 
-/* Botón de advertencia */
 .action-btn.warning {
   background: linear-gradient(135deg, #fed330 0%, #f7b731 100%);
   color: #2d3748;
@@ -284,10 +257,6 @@
   box-shadow: 0 4px 8px rgba(247, 183, 49, 0.4);
   transform: translateY(-2px);
 }
-
-/* ===================================
-   MODO COMPACTO
-   =================================== */
 
 .az-table-wrapper.compact .az-table th {
   padding: 12px 16px;
@@ -307,10 +276,6 @@
   padding: 6px 12px;
   font-size: 12px;
 }
-
-/* ===================================
-   RESPONSIVE
-   =================================== */
 
 @media (max-width: 768px) {
   .az-table th,
@@ -356,10 +321,6 @@
   }
 }
 
-/* ===================================
-   ANIMACIONES
-   =================================== */
-
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -381,25 +342,15 @@
 .az-table tbody tr:nth-child(4) { animation-delay: 0.2s; }
 .az-table tbody tr:nth-child(5) { animation-delay: 0.25s; }
 
-/* ===================================
-   ESTADOS ESPECIALES
-   =================================== */
-
-/* Fila seleccionada */
 .az-table tbody tr.selected {
   background: linear-gradient(90deg, #e6f0ff 0%, #f0f5ff 100%);
   border-left: 3px solid #667eea;
 }
 
-/* Fila deshabilitada */
 .az-table tbody tr.disabled {
   opacity: 0.5;
   pointer-events: none;
 }
-
-/* ===================================
-   BADGES Y TAGS
-   =================================== */
 
 .status-badge {
   display: inline-block;

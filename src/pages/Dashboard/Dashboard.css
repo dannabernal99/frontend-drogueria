@@ -1,4 +1,4 @@
-@import "../../../styles/variables.css";
+@import "../../styles/variables.css";
 
 .dashboard-layout {
   display: flex;
@@ -10,7 +10,6 @@
 .dashboard-content {
   flex: 1;
   padding: 2rem;
-  margin-left: 240px;
   background-color: #fff;
   min-height: calc(100vh - 60px);
   overflow-y: auto;

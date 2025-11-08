@@ -5,7 +5,7 @@ interface RequestConfig {
   url: string;
   method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
   headers?: Record<string, string>;
-  body?: any;
+  body?: unknown;
 }
 
 interface HttpResponse<T> {
@@ -16,7 +16,7 @@ interface HttpResponse<T> {
   reset: () => void;
 }
 
-export function useHttp<T = any>(): HttpResponse<T> {
+export function useHttp<T = unknown>(): HttpResponse<T> {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -53,27 +53,22 @@ export function useHttp<T = any>(): HttpResponse<T> {
         }
       }
 
-      // Intentar parsear la respuesta como JSON
       const contentType = response.headers.get("content-type");
       if (contentType && contentType.includes("application/json")) {
         const jsonData = await response.json();
         setData(jsonData);
       } else {
-        // Si no es JSON, intentar como texto
         const textData = await response.text();
-        setData(textData as any);
+        setData(textData as T);
       }
 
-    } catch (err: any) {
-      const errorMessage = err.message || "Error inesperado al realizar la petición";
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Error inesperado al realizar la petición";
       setError(errorMessage);
       console.error("[HTTP] Error:", errorMessage, err);
 
-      // Si es error de autenticación, podríamos limpiar el token
-      if (err.message.includes("No autorizado")) {
+      if (errorMessage.includes("No autorizado")) {
         localStorage.removeItem("token");
-        // Opcional: redirigir al login
-        // window.location.href = "/login";
       }
     } finally {
       setLoading(false);
