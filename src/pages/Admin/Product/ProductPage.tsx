@@ -6,10 +6,12 @@ import FormModal from "../../../components/FormModal/FormModal";
 import { useHttp } from "../../../hooks/useHttp";
 import type { FormField } from "../../../components/FormModal/FormModal";
 import type { Product } from "../../../types/Product";
+import type { Category } from "../../../types/Category";
 import ConfirmModal from "../../../components/ConfirmModal/ConfirmModal";
 
 const ProductPage: React.FC = () => {
   const { data: productos, loading, error, sendRequest } = useHttp<Product[]>();
+  const { data: categorias, sendRequest: sendCategoryRequest } = useHttp<Category[]>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [deleteModal, setDeleteModal] = useState({
@@ -18,6 +20,23 @@ const ProductPage: React.FC = () => {
   });
 
   const [menuAbierto, setMenuAbierto] = useState(true);
+
+  const loadCategorias = useCallback(() => {
+    const token = localStorage.getItem("token");
+    
+    if (!token) {
+      console.error("No hay token de autenticación disponible");
+      return;
+    }
+
+    sendCategoryRequest({
+      url: "/v1/categorias",
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }, [sendCategoryRequest]);
 
   const loadProductos = useCallback(() => {
     const token = localStorage.getItem("token");
@@ -37,8 +56,9 @@ const ProductPage: React.FC = () => {
   }, [sendRequest]);
 
   useEffect(() => {
+    loadCategorias();
     loadProductos();
-  }, [loadProductos]);
+  }, [loadCategorias, loadProductos]);
 
   const columns = [
     { 
@@ -51,6 +71,12 @@ const ProductPage: React.FC = () => {
       label: "Nombre",
       sortable: true,
       exportLabel: "Nombre del Producto",
+    },
+    { 
+      key: "categoriaNombre", 
+      label: "Categoría",
+      sortable: true,
+      exportLabel: "Categoría",
     },
     { 
       key: "precio", 
@@ -133,6 +159,24 @@ const ProductPage: React.FC = () => {
       defaultValue: editingProduct?.nombre || "",
     },
     {
+      name: "categoriaId",
+      label: "Categoría",
+      type: "select",
+      placeholder: "Selecciona una categoría",
+      required: true,
+      options: (categorias || []).map(cat => ({
+        value: cat.id,
+        label: String(cat.nombre),
+      })),
+      validation: (value) => {
+        if (!value) {
+          return "Debes seleccionar una categoría";
+        }
+        return undefined;
+      },
+      defaultValue: editingProduct?.categoriaId || "",
+    },
+    {
       name: "precio",
       label: "Precio",
       type: "number",
@@ -178,6 +222,11 @@ const ProductPage: React.FC = () => {
   };
 
   const handleAddNew = () => {
+    // Verificar si hay categorías disponibles
+    if (!categorias || categorias.length === 0) {
+      alert("No hay categorías disponibles. Por favor, crea al menos una categoría antes de crear un producto.");
+      return;
+    }
     setEditingProduct(null);
     setIsModalOpen(true);
   };
