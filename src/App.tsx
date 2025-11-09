@@ -6,6 +6,7 @@ import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import Home from "./pages/Home/Home";
 import ProductPage from "./pages/Admin/Product/ProductPage";
 import UserPage from "./pages/Admin/User/UserPage";
+import CategoryPage from "./pages/Admin/Category/CategoryPage";
 
 function App() {
   return (
@@ -20,6 +21,15 @@ function App() {
     element={
       <ProtectedRoute allowedRoles={["ADMIN", "USER"]}>
         <Dashboard />
+      </ProtectedRoute>
+    }
+  />
+
+  <Route
+    path="/admin/categories"
+    element={
+      <ProtectedRoute allowedRoles={["ADMIN"]}>
+        <CategoryPage />
       </ProtectedRoute>
     }
   />

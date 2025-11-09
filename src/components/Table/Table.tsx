@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import "./Table.css";
+import Modal from "../Modal/Modal";
 
 export type Column<T> = {
   key: keyof T | string;
@@ -67,6 +68,8 @@ export default function Table<T extends Record<string, unknown>>({
 
   const [searchTerm, setSearchTerm] = useState("");
   const [columnFilters, setColumnFilters] = useState<Record<string, string>>({});
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const sortedData = useMemo(() => {
     if (!sortBy) return data;
@@ -150,7 +153,7 @@ export default function Table<T extends Record<string, unknown>>({
 
   function handleExport() {
     if (!filteredData || filteredData.length === 0) {
-      alert("No hay datos para exportar");
+      setIsModalOpen(true);
       return;
     }
 
@@ -359,6 +362,13 @@ export default function Table<T extends Record<string, unknown>>({
           </div>
         </div>
       )}
+
+      <Modal
+        isOpen={isModalOpen}
+        title="Aviso"
+        message="No hay datos para exportar."
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }
