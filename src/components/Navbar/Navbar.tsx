@@ -18,8 +18,13 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
     navigate("/");
   };
 
-  const rutasSinMenu = ["/"];
+  const rutasSinMenu = ["/", "/login", "/register"];
   const mostrarMenu = isAuthenticated && usuario && !rutasSinMenu.includes(location.pathname);
+
+  const getDashboardPath = () => {
+    if (usuario?.roleNombre?.toUpperCase() === "ADMIN") return "/admin/dashboard";
+    return "/dashboard";
+  };
 
   return (
     <nav className="navbar">
@@ -31,13 +36,21 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
       <div className="navbar-links">
         {!isAuthenticated ? (
           <>
-            <Link to="/login" className="navbar-link">Ingresar</Link>
-            <Link to="/register" className="navbar-link">Registrarse</Link>
+            <Link to="/login" className="navbar-link">
+              Ingresar
+            </Link>
+            <Link to="/register" className="navbar-link">
+              Registrarse
+            </Link>
           </>
         ) : (
           <>
-            <Link to="/" className="navbar-link">Inicio</Link>
-            <Link to="/dashboard" className="navbar-link">Dashboard</Link>
+            <Link to="/" className="navbar-link">
+              Inicio
+            </Link>
+            <Link to={getDashboardPath()} className="navbar-link">
+              Dashboard
+            </Link>
             <button className="navbar-btn" onClick={handleLogout}>
               Cerrar sesión
             </button>
