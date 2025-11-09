@@ -185,12 +185,16 @@ const ProductPage: React.FC = () => {
       min: 0,
       step: 100,
       validation: (value) => {
-        if (typeof value !== "number" || value <= 0) {
+        if (value === "" || value === null || value === undefined) {
+          return "Debes ingresar un precio";
+        }
+        const num = Number(value);
+        if (isNaN(num) || num <= 0) {
           return "El precio debe ser mayor a 0";
         }
         return undefined;
       },
-      defaultValue: editingProduct?.precio ?? 0,
+      defaultValue: editingProduct?.precio?.toString() ?? "",
     },
     {
       name: "cantidad",
@@ -201,13 +205,17 @@ const ProductPage: React.FC = () => {
       min: 0,
       step: 1,
       validation: (value) => {
-        if (typeof value !== "number" || value < 0) {
+        if (value === "" || value === null || value === undefined) {
+          return "Debes ingresar una cantidad";
+        }
+        const num = Number(value);
+        if (isNaN(num) || num < 0) {
           return "La cantidad no puede ser negativa";
         }
         return undefined;
       },
-      defaultValue: editingProduct?.cantidad ?? 0,
-    },
+      defaultValue: editingProduct?.cantidad?.toString() ?? "",
+    }
   ];
 
   const handleSubmit = async () => {
