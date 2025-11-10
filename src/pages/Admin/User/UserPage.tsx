@@ -194,7 +194,6 @@ const UserPage: React.FC = () => {
             showExportButton: true,
             exportFileName: "usuarios",
           }}
-          enablePagination
           defaultRowsPerPage={10}
           rowsPerPageOptions={[5, 10, 20, 50]}
           enableSearch

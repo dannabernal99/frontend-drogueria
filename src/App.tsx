@@ -8,6 +8,7 @@ import UserPage from "./pages/Admin/User/UserPage";
 import CategoryPage from "./pages/Admin/Category/CategoryPage";
 import DashboardAdmin from "./pages/Admin/Dashboard/DashboardAdmin";
 import DashboardUser from "./pages/User/Dashboard/DashboardUser";
+import SalePage from "./pages/User/Sale/SalePage";
 
 function App() {
   return (
@@ -31,6 +32,15 @@ function App() {
     element={
       <ProtectedRoute allowedRoles={["USER"]}>
         <DashboardUser />
+      </ProtectedRoute>
+    }
+  />
+
+  <Route
+    path="/sales"
+    element={
+      <ProtectedRoute allowedRoles={["ADMIN", "USER"]}>
+        <SalePage />
       </ProtectedRoute>
     }
   />

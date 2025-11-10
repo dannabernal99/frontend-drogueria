@@ -260,7 +260,6 @@ const ProductPage: React.FC = () => {
               showExportButton: true,
               exportFileName: "productos",
             }}
-            enablePagination={true}
             defaultRowsPerPage={10}
             rowsPerPageOptions={[5, 10, 20, 50]}
             enableSearch={true}

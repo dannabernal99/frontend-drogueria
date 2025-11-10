@@ -175,7 +175,6 @@ const CategoryPage: React.FC = () => {
               showExportButton: true,
               exportFileName: "Categorías",
             }}
-            enablePagination={true}
             defaultRowsPerPage={10}
             rowsPerPageOptions={[5, 10, 20, 50]}
             enableSearch={true}

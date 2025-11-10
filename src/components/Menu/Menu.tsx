@@ -7,7 +7,6 @@ import {
   LayoutDashboard,
   Users,
   Package,
-  FileBarChart,
   ShoppingCart,
 } from "lucide-react";
 import "./Menu.css";
@@ -50,11 +49,11 @@ const Menu: React.FC<MenuProps> = ({ onToggle }) => {
       { label: "Usuarios", path: "/admin/users", icon: <Users size={20} /> },
       { label: "Categorías", path: "/admin/categories", icon: <Package size={20} /> },
       { label: "Productos", path: "/admin/products", icon: <Package size={20} /> },
-      { label: "Reportes", path: "/reportes", icon: <FileBarChart size={20} /> },
+      { label: "Compras", path: "/sales", icon: <ShoppingCart size={20} /> },
     ],
     USER: [
       { label: "Dashboard", path: "/dashboard", icon: <LayoutDashboard size={20} /> },
-      { label: "Ventas", path: "/ventas", icon: <ShoppingCart size={20} /> },
+      { label: "Compras", path: "/sales", icon: <ShoppingCart size={20} /> },
     ],
   };
 

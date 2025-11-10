@@ -1,0 +1,26 @@
+.welcome-user {
+  margin-top: 1rem;
+  color: #667eea;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.change-user-btn {
+  background: transparent;
+  border: 2px solid #667eea;
+  color: #667eea;
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.change-user-btn:hover {
+  background: #667eea;
+  color: white;
+}
