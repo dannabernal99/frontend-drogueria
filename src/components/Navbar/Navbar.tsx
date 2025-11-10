@@ -36,6 +36,9 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
       <div className="navbar-links">
         {!isAuthenticated ? (
           <>
+            <Link to="/" className="navbar-link">
+              Inicio
+            </Link>
             <Link to="/login" className="navbar-link">
               Ingresar
             </Link>
