@@ -95,11 +95,19 @@ const Home: React.FC = () => {
         method: "GET",
       });
     } catch (error) {
-      showModal(
-        "Error en la compra",
-        "No se pudo completar tu compra. Verifica que tu usuario sea correcto e intenta nuevamente."
-      );
-      console.error(error);
+      if (error instanceof Error && error.message.includes("404")) {
+        showModal(
+          "Usuario no encontrado",
+          `El usuario "${username}" no existe en el sistema. Por favor verifica que el nombre de usuario sea correcto.`
+        );
+        localStorage.removeItem("guestUsername");
+        setSavedUsername(null);
+      } else {
+        showModal(
+          "Error en la compra",
+          "No se pudo completar tu compra. Verifica que tu usuario sea correcto e intenta nuevamente."
+        );
+      }
     }
   };
 

@@ -70,6 +70,8 @@ export function useHttp<T = unknown>(): HttpResponse<T> {
       if (errorMessage.includes("No autorizado")) {
         localStorage.removeItem("token");
       }
+
+      throw err;
     } finally {
       setLoading(false);
     }
