@@ -112,6 +112,51 @@
   box-shadow: none;
 }
 
+.quantity-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background: #f8f9fa;
+  border-top: 1px solid #ecf0f1;
+}
+
+.quantity-btn {
+  width: 32px;
+  height: 32px;
+  border: 2px solid #667eea;
+  background: white;
+  color: #667eea;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quantity-btn:hover:not(:disabled) {
+  background: #667eea;
+  color: white;
+  transform: scale(1.1);
+}
+
+.quantity-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.quantity-value {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2c3e50;
+  min-width: 30px;
+  text-align: center;
+}
+
 @media (max-width: 768px) {
   .product-card-body {
     padding: 1rem;

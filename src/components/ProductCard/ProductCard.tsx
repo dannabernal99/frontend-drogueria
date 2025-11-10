@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./ProductCard.css";
 
 interface ProductCardProps {
@@ -6,7 +6,7 @@ interface ProductCardProps {
   price: number;
   categoryName: string;
   quantity: number;
-  onAddToCart?: () => void;
+  onAddToCart?: (cantidad: number) => void;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -16,14 +16,33 @@ const ProductCard: React.FC<ProductCardProps> = ({
   quantity,
   onAddToCart,
 }) => {
+  const [cantidadCompra, setCantidadCompra] = useState(1);
   const isOutOfStock = quantity === 0;
+
+  const handleIncrement = () => {
+    if (cantidadCompra < quantity) {
+      setCantidadCompra(cantidadCompra + 1);
+    }
+  };
+
+  const handleDecrement = () => {
+    if (cantidadCompra > 1) {
+      setCantidadCompra(cantidadCompra - 1);
+    }
+  };
+
+  const handleComprar = () => {
+    if (onAddToCart) {
+      onAddToCart(cantidadCompra);
+    }
+  };
 
   return (
     <div className={`product-card ${isOutOfStock ? "out-of-stock" : ""}`}>
       <div className="product-card-header">
         <span className="product-category">{categoryName}</span>
         <span className={`product-stock ${isOutOfStock ? "no-stock" : ""}`}>
-          {isOutOfStock ? "Agotado" : `Stock: ${quantity}`}
+          {isOutOfStock ? "Agotado" : `Disponible: ${quantity}`}
         </span>
       </div>
       
@@ -32,10 +51,30 @@ const ProductCard: React.FC<ProductCardProps> = ({
         <p className="product-price">${price.toLocaleString("es-CO")}</p>
       </div>
       
+      {!isOutOfStock && (
+        <div className="quantity-selector">
+          <button 
+            className="quantity-btn" 
+            onClick={handleDecrement}
+            disabled={cantidadCompra <= 1}
+          >
+            -
+          </button>
+          <span className="quantity-value">{cantidadCompra}</span>
+          <button 
+            className="quantity-btn" 
+            onClick={handleIncrement}
+            disabled={cantidadCompra >= quantity}
+          >
+            +
+          </button>
+        </div>
+      )}
+      
       <div className="product-card-footer">
         {!isOutOfStock && onAddToCart && (
-          <button className="add-to-cart-btn" onClick={onAddToCart}>
-            Comprar
+          <button className="add-to-cart-btn" onClick={handleComprar}>
+            Comprar ({cantidadCompra})
           </button>
         )}
         {isOutOfStock && (
